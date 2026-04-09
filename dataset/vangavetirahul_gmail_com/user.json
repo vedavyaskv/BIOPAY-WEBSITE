@@ -1,0 +1,27 @@
+{
+    "full_name": "Rahul Gupta",
+    "email": "vangavetirahul@gmail.com",
+    "mobile": "9618624375",
+    "native_city": "Visakhapatnam",
+    "bank_name": "SBI",
+    "unique_id": "rahul.4375@sbi",
+    "security_questions": {
+        "What was the name of your first school?": "SSSVV"
+    },
+    "balance": 4100.0,
+    "created_on": "2026-02-02 12:10:32",
+    "transactions": [
+        {
+            "type": "Debit",
+            "to": "vedavyas.1543@sbi",
+            "amount": 1000,
+            "status": "Success"
+        },
+        {
+            "type": "Credit",
+            "from": "vedavyas.1543@sbi",
+            "amount": 100,
+            "status": "Success"
+        }
+    ]
+}

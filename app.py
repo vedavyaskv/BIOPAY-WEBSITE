@@ -778,17 +778,95 @@ with tab_home:
 # ==================================================
 # TAB 1: REGISTER
 # ==================================================
+# with tab_reg:
+#     st.markdown("### ✨ Enrollment")
+#     fn = st.text_input("Full Name")
+#     em = st.text_input("Email")
+#     bn = st.selectbox("Bank", ["SBI", "HDFC", "ICICI", "Axis"])
+#     mb = st.text_input("Mobile")
+#     nc = st.text_input("Native City")
+#     if st.button("🚀 REGISTER"):
+#         register_user(fn, em, mb, nc, bn, {})
+#         train_model()
+#         st.success("User Registered!")
+
 with tab_reg:
-    st.markdown("### ✨ Enrollment")
-    fn = st.text_input("Full Name")
-    em = st.text_input("Email")
-    bn = st.selectbox("Bank", ["SBI", "HDFC", "ICICI", "Axis"])
-    mb = st.text_input("Mobile")
-    nc = st.text_input("Native City")
-    if st.button("🚀 REGISTER"):
-        register_user(fn, em, mb, nc, bn, {})
-        train_model()
-        st.success("User Registered!")
+    st.markdown("### ✨ Identity Enrollment")
+    
+    # Row 1: Primary Details
+    col1, col2 = st.columns(2)
+    with col1:
+        fn = st.text_input("Full Name")
+        em = st.text_input("Email")
+        
+        # Bank selectbox with placeholder
+        bank_list = [
+            "Choose your bank", "SBI", "HDFC", "ICICI", "Axis", 
+            "Bank of Baroda", "PNB", "Canara Bank", 
+            "Kotak Mahindra", "IndusInd Bank"
+        ]
+        bn = st.selectbox("Bank Name", options=bank_list, index=0)
+        
+    with col2:
+        mb = st.text_input("Mobile", placeholder="10-digit number")
+        nc = st.text_input("Native City")
+        
+        # Spacer to align checkbox
+        st.write("<div style='height: 28px;'></div>", unsafe_allow_html=True) 
+        agree = st.checkbox("I consent to Biometric Data Capture")
+
+    st.markdown("---")
+    
+    # Row 2: Security Recovery Setup
+    st.markdown("#### 🛡️ Security Recovery Setup")
+    sq_col, sa_col = st.columns([2, 1])
+    
+    with sq_col:
+        sq = st.selectbox("Select a Security Question", [
+            "What was the name of your first school?",
+            "What is your mother's maiden name?",
+            "What was your first pet's name?",
+            "In which city were you born?"
+        ])
+    with sa_col:
+        sa = st.text_input("Secret Answer", type="password", help="Used for account recovery")
+
+    # Data Validation Logic
+    can_reg = False
+    validation_box = st.empty()
+
+    if fn and em and mb and sa and agree:
+        # Check if user details already exist
+        from user_utils import check_user_exists
+        exists, msg = check_user_exists(em, fn, mb)
+        
+        if exists:
+            validation_box.error(f"🛑 {msg}")
+        elif bn == "Choose your bank":
+            validation_box.warning("⚠️ Please select your bank to continue.")
+        elif len(mb) != 10:
+            validation_box.warning("⚠️ Please enter a valid 10-digit mobile number.")
+        else:
+            validation_box.success("✅ Form validated. Ready for capture.")
+            can_reg = True
+
+    # Action Button
+    st.write("")
+    if st.button("🚀 INITIALIZE BIOMETRIC CAPTURE", width="stretch", disabled=not can_reg):
+        with st.status("Initializing Biometric Module...", expanded=True) as status:
+            # 1. Capture 30 face and 20 eye images
+            register_user(fn, em, mb, nc, bn, {sq: sa})
+            
+            # 2. Train the recognizer
+            status.write("Training AI model with new samples...")
+            train_model() 
+            
+            status.update(label="Enrollment Complete!", state="complete", expanded=False)
+        
+        # Display results
+        new_uid = f"{fn.split()[0].lower()}.{mb[-4:]}@{bn.lower()}"
+        st.success(f"Registration Successful! Your Bio-ID is: `{new_uid}`")
+
 
 # ==================================================
 # TAB 2: DIRECTORY
@@ -811,7 +889,87 @@ with tab_list:
 # ==================================================
 # TAB 3: PAYMENT
 # ==================================================
+# with tab_pay:
+#     if "current_authenticated_user" not in st.session_state:
+#         st.warning("🔒 Verification Required: Please authenticate your face in the **HOME** tab first.")
+#         st.stop()
+
+#     sender_folder = st.session_state.current_authenticated_user
+#     u_info = get_user_data(sender_folder)
+#     sender_bio_id = u_info.get("unique_id", "Not Assigned")
+    
+#     if st.session_state.payment_step == "input":
+#         st.markdown(f"### 💸 Secure Payment Terminal")
+#         st.markdown(f"**Sender Bio-ID:** `{sender_bio_id}`")
+        
+#         col_scan, col_manual = st.columns(2)
+#         with col_scan:
+#             if st.button("🚀 OPEN QR CAMERA"):
+#                 rid = scan_biopay_qr()
+#                 if rid:
+#                     st.session_state.qr_scanned_id = rid
+#                     st.session_state.payment_step = "confirm"; st.rerun()
+
+#         with col_manual:
+#             rid_input = st.text_input("Receiver Bio-ID", value=st.session_state.qr_scanned_id)
+#             if st.button("Proceed to Verify"):
+#                 if rid_input:
+#                     st.session_state.qr_scanned_id = rid_input
+#                     st.session_state.payment_step = "confirm"; st.rerun()
+
+#     elif st.session_state.payment_step == "confirm":
+#         st.markdown("### 🛡️ Confirm Transaction")
+#         current_bal = u_info.get("balance", 0)
+        
+#         st.markdown(f"**Sender ID:** `{sender_bio_id}`")
+#         st.markdown(f"**Receiver ID:** `{st.session_state.qr_scanned_id}`")
+        
+#         with st.container(border=True):
+#             c1, c2 = st.columns(2)
+#             with c1:
+#                 # amount defined here so it is available to the verification block
+#                 amount = st.number_input("Amount (₹)", min_value=1, value=100)
+#             with c2:
+#                 st.metric("Available Balance", f"₹{current_bal}")
+        
+#         if st.button("⚡ VERIFY IMAGE & SEND", disabled=(amount > current_bal)):
+#             status = st.empty()
+#             with status.container():
+#                 st.write("⏳ Step 1: Targeted Face Authentication...")
+#                 # Targeted check: Rahul only matches Rahul
+#                 if authenticate(sender_folder):
+#                     st.write("✅ Identity Confirmed!")
+#                     st.write("⏳ Step 2: Liveness Verification...")
+#                     if blink_verification():
+#                         if update_transaction(sender_folder, amount, st.session_state.qr_scanned_id):
+#                             st.session_state.last_tx_details = {
+#                                 "sender": sender_bio_id,
+#                                 "receiver": st.session_state.qr_scanned_id,
+#                                 "amount": amount
+#                             }
+#                             st.session_state.payment_step = "success"; st.rerun()
+#                     else: st.error("❌ Liveness Failed")
+#                 else: st.error(f"❌ Security Alert: Face does not match account ({sender_folder})")
+
+#     elif st.session_state.payment_step == "success":
+#         tx = st.session_state.last_tx_details
+#         st.markdown("""
+#             <div style="text-align:center; padding:30px;">
+#                 <div class="checkmark-circle"><div class="background"></div><div class="checkmark draw"></div></div>
+#                 <h1 style="color:#2ecc71;">Transaction Successful</h1>
+#             </div>""", unsafe_allow_html=True)
+        
+#         with st.container(border=True):
+#             st.markdown(f"**From Sender ID:** `{tx['sender']}`")
+#             st.markdown(f"**To Receiver ID:** `{tx['receiver']}`")
+#             st.markdown(f"## ₹ {tx['amount']}")
+        
+#         if st.button("DONE"):
+#             st.session_state.payment_step = "input"; st.session_state.qr_scanned_id = ""; st.rerun()
+
 with tab_pay:
+    # 1. AUTHENTICATION CHECK
+    # Ensure the sender has verified their face in the HOME tab before proceeding
     if "current_authenticated_user" not in st.session_state:
         st.warning("🔒 Verification Required: Please authenticate your face in the **HOME** tab first.")
         st.stop()
@@ -820,6 +978,7 @@ with tab_pay:
     u_info = get_user_data(sender_folder)
     sender_bio_id = u_info.get("unique_id", "Not Assigned")
     
+    # ---------------- STAGE 1: INPUT ----------------
     if st.session_state.payment_step == "input":
         st.markdown(f"### 💸 Secure Payment Terminal")
         st.markdown(f"**Sender Bio-ID:** `{sender_bio_id}`")
@@ -827,18 +986,22 @@ with tab_pay:
         col_scan, col_manual = st.columns(2)
         with col_scan:
             if st.button("🚀 OPEN QR CAMERA"):
+                # Scans receiver's QR code and moves to confirmation
                 rid = scan_biopay_qr()
                 if rid:
                     st.session_state.qr_scanned_id = rid
-                    st.session_state.payment_step = "confirm"; st.rerun()
+                    st.session_state.payment_step = "confirm"
+                    st.rerun()
 
         with col_manual:
             rid_input = st.text_input("Receiver Bio-ID", value=st.session_state.qr_scanned_id)
             if st.button("Proceed to Verify"):
                 if rid_input:
                     st.session_state.qr_scanned_id = rid_input
-                    st.session_state.payment_step = "confirm"; st.rerun()
+                    st.session_state.payment_step = "confirm"
+                    st.rerun()
 
+    # ---------------- STAGE 2: CONFIRMATION & AUTH ----------------
     elif st.session_state.payment_step == "confirm":
         st.markdown("### 🛡️ Confirm Transaction")
         current_bal = u_info.get("balance", 0)
@@ -849,32 +1012,44 @@ with tab_pay:
         with st.container(border=True):
             c1, c2 = st.columns(2)
             with c1:
-                # amount defined here so it is available to the verification block
                 amount = st.number_input("Amount (₹)", min_value=1, value=100)
             with c2:
                 st.metric("Available Balance", f"₹{current_bal}")
         
+        # Enable payment only if balance is sufficient
         if st.button("⚡ VERIFY IMAGE & SEND", disabled=(amount > current_bal)):
             status = st.empty()
             with status.container():
                 st.write("⏳ Step 1: Targeted Face Authentication...")
-                # Targeted check: Rahul only matches Rahul
+                
+                # Targeted check ensures ONLY the logged-in user can authorize
                 if authenticate(sender_folder):
                     st.write("✅ Identity Confirmed!")
                     st.write("⏳ Step 2: Liveness Verification...")
+                    
+                    # Blink detection prevents photo-based spoofing
                     if blink_verification():
+                        # Executes dual-user balance update and sends SMTP mail alerts
                         if update_transaction(sender_folder, amount, st.session_state.qr_scanned_id):
                             st.session_state.last_tx_details = {
                                 "sender": sender_bio_id,
                                 "receiver": st.session_state.qr_scanned_id,
                                 "amount": amount
                             }
-                            st.session_state.payment_step = "success"; st.rerun()
-                    else: st.error("❌ Liveness Failed")
-                else: st.error(f"❌ Security Alert: Face does not match account ({sender_folder})")
+                            st.session_state.payment_step = "success"
+                            st.rerun()
+                        else:
+                            st.error("❌ Transaction failed (Invalid Receiver or Balance error)")
+                    else: 
+                        st.error("❌ Liveness Failed (Blink not detected)")
+                else: 
+                    st.error(f"❌ Security Alert: Face does not match account ({sender_folder})")
 
+    # ---------------- STAGE 3: SUCCESS ----------------
     elif st.session_state.payment_step == "success":
         tx = st.session_state.last_tx_details
+        
+        # GPay-style success tick animation
         st.markdown("""
             <div style="text-align:center; padding:30px;">
                 <div class="checkmark-circle"><div class="background"></div><div class="checkmark draw"></div></div>
@@ -884,7 +1059,10 @@ with tab_pay:
         with st.container(border=True):
             st.markdown(f"**From Sender ID:** `{tx['sender']}`")
             st.markdown(f"**To Receiver ID:** `{tx['receiver']}`")
-            st.markdown(f"## ₹ {tx['amount']}")
-        
+            st.markdown(f"<h2 style='color:#2ecc71;'>₹ {tx['amount']}</h2>", unsafe_allow_html=True)
+            st.info("📧 Debit/Credit notifications have been sent to registered emails.")
+
         if st.button("DONE"):
-            st.session_state.payment_step = "input"; st.session_state.qr_scanned_id = ""; st.rerun()
+            st.session_state.payment_step = "input"
+            st.session_state.qr_scanned_id = ""
+            st.rerun()

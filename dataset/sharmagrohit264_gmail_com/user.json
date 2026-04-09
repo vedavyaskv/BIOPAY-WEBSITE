@@ -1,0 +1,39 @@
+{
+    "full_name": "Rohit",
+    "email": "sharmagrohit264@gmail.com",
+    "mobile": "5467892463",
+    "native_city": "Mumbai",
+    "bank_name": "Axis",
+    "unique_id": "rohit.2463@axis",
+    "security_questions": {
+        "What is your mother's maiden name?": "abcdefg"
+    },
+    "balance": 5400.0,
+    "created_on": "2026-02-01 10:57:30",
+    "transactions": [
+        {
+            "type": "Credit",
+            "from": "vedavyas.1543@sbi",
+            "amount": 100,
+            "status": "Success"
+        },
+        {
+            "type": "Credit",
+            "from": "vedavyas.1543@sbi",
+            "amount": 100,
+            "status": "Success"
+        },
+        {
+            "type": "Credit",
+            "from": "vedavyas.1543@sbi",
+            "amount": 100,
+            "status": "Success"
+        },
+        {
+            "type": "Credit",
+            "from": "vedavyas.1543@sbi",
+            "amount": 100,
+            "status": "Success"
+        }
+    ]
+}

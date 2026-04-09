@@ -7,12 +7,32 @@
     "unique_id": "rahul.4644@sbi",
     "security_questions": {},
     "failed_attempts": 0,
-    "balance": 4800.0,
+    "balance": 4300.0,
     "transactions": [
         {
             "to": "kvv.6789@axis",
             "amount": 100,
             "timestamp": "The current date is: Thu 01/29/2026 \nEnter the new date: (mm-dd-yy)"
+        },
+        {
+            "to": "vedavyas.1543@sbi",
+            "amount": 100
+        },
+        {
+            "to": "vedavyas.1543@sbi",
+            "amount": 100
+        },
+        {
+            "to": "vedavyas.1543@sbi",
+            "amount": 100
+        },
+        {
+            "to": "kvv.6789@axis",
+            "amount": 100
+        },
+        {
+            "to": "kvv.6789@axis",
+            "amount": 100
         },
         {
             "to": "vedavyas.1543@sbi",

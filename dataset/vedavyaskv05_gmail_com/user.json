@@ -7,7 +7,7 @@
     "unique_id": "vedavyas.1543@sbi",
     "security_questions": {},
     "failed_attempts": 0,
-    "balance": 3550,
+    "balance": 3950.0,
     "transactions": [
         {
             "to": "kvv.6789@axis",
@@ -33,6 +33,56 @@
             "to": "kvv.6789@axis",
             "amount": 100,
             "timestamp": "The current date is: Thu 01/29/2026 \nEnter the new date: (mm-dd-yy)"
+        },
+        {
+            "to": "kvv.6789@axis",
+            "amount": 100
+        },
+        {
+            "to": "rahul.4644@sbi",
+            "amount": 100
+        },
+        {
+            "type": "Debit",
+            "to": "rohit.2463@axis",
+            "amount": 100,
+            "status": "Success"
+        },
+        {
+            "type": "Debit",
+            "to": "rohit.2463@axis",
+            "amount": 100,
+            "status": "Success"
+        },
+        {
+            "type": "Debit",
+            "to": "rohit.2463@axis",
+            "amount": 100,
+            "status": "Success"
+        },
+        {
+            "type": "Credit",
+            "from": "rahul.4375@axis",
+            "amount": 100,
+            "status": "Success"
+        },
+        {
+            "type": "Credit",
+            "from": "rahul.4375@sbi",
+            "amount": 1000,
+            "status": "Success"
+        },
+        {
+            "type": "Debit",
+            "to": "rahul.4375@sbi",
+            "amount": 100,
+            "status": "Success"
+        },
+        {
+            "type": "Debit",
+            "to": "rohit.2463@axis",
+            "amount": 100,
+            "status": "Success"
         }
     ],
     "created_on": "2026-01-29 16:46:15"
