@@ -4,6 +4,8 @@ import geocoder
 import plotly.graph_objects as go
 import pickle
 import threading
+
+from streamlit import components
 from face_register import register_user, scan_biopay_qr
 from model_utils import train_model
 from face_auth import authenticate
@@ -536,6 +538,29 @@ if "user_folder" not in st.session_state: st.session_state.user_folder = ""
 if "qr_scanned_id" not in st.session_state: st.session_state.qr_scanned_id = ""
 if "payment_step" not in st.session_state: st.session_state.payment_step = "input"
 if "last_tx_details" not in st.session_state: st.session_state.last_tx_details = {}
+
+try:
+    import winsound
+    HAS_WINSOUND = True
+except ImportError:
+    HAS_WINSOUND = False
+
+def play_beep():
+    if HAS_WINSOUND:
+        try:
+            winsound.Beep(1000, 300)
+        except:
+            pass # Fallback for non-windows environments
+    else:
+        components.html("""
+            <script>
+            var context = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = context.createOscillator();
+            osc.connect(context.destination);
+            osc.start();
+            setTimeout(function () { osc.stop(); }, 200);
+            </script>
+        """, height=0)
 
 # ─── TOP NAVBAR LOGIC ─────────────────────────────
 nav_l, nav_r = st.columns([3, 1.2])

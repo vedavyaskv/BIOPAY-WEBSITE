@@ -4,3 +4,7 @@ numpy
 streamlit
 mediapipe
 geocoder
+opencv-python-headless
+streamlit-webrtc
+hashlib
+av
