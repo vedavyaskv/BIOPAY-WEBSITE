@@ -1,10 +1,7 @@
-opencv-python
-opencv-contrib-python
-numpy
 streamlit
+opencv-python-headless
+numpy
+streamlit-webrtc
+av
 mediapipe
 geocoder
-opencv-python-headless
-streamlit-webrtc
-hashlib
-av
